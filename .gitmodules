@@ -1,3 +1,6 @@
 [submodule "Submodules/FBConnect"]
 	path = Submodules/FBConnect
 	url = https://github.com/facebook/facebook-ios-sdk.git
+[submodule "Submodules/xmppframework"]
+	path = Submodules/xmppframework
+	url = https://github.com/robbiehanson/XMPPFramework.git
