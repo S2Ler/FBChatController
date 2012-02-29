@@ -1,0 +1,3 @@
+[submodule "Submodules/FBConnect"]
+	path = Submodules/FBConnect
+	url = https://github.com/facebook/facebook-ios-sdk.git
