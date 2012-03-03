@@ -7,8 +7,26 @@
 //
 
 #import "FCViewController.h"
+#import "FBChatController.h"
+#import "XMPPUser.h"
+
+@interface FCViewController ()
+@property (nonatomic, retain) NSArray *availableUsers;
+@end
 
 @implementation FCViewController
+@synthesize tableView = _tableView;
+@synthesize chatController = _chatController;
+@synthesize availableUsers = _availableUsers;
+
+- (id)init
+{
+  self = [super init];
+  if (self) {
+
+  }
+  return self;
+}
 
 - (void)chatController:(FBChatController *)theClient 
 didAuthenticateSuccessfully:(BOOL)theSuccessFlag
@@ -35,12 +53,12 @@ didAuthenticateSuccessfully:(BOOL)theSuccessFlag
 
 - (void)viewDidLoad
 {
-    [super viewDidLoad];
-	// Do any additional setup after loading the view, typically from a nib.
+  [super viewDidLoad];
 }
 
 - (void)viewDidUnload
 {
+  [self setTableView:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
@@ -72,4 +90,52 @@ didAuthenticateSuccessfully:(BOOL)theSuccessFlag
   return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
 }
 
+- (void)dealloc {
+  [_tableView release];
+  [super dealloc];
+}
+
+#pragma mark - UITableViewDataSource
+- (NSInteger)tableView:(UITableView *)tableView
+ numberOfRowsInSection:(NSInteger)section
+{
+  NSInteger rows = [[self availableUsers] count];
+  
+  return rows;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView
+         cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+  static NSString *CELL_ID = @"CELL_ID";
+  
+  UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CELL_ID];
+  
+  if (!cell) {
+    cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle
+                                   reuseIdentifier:CELL_ID] autorelease];    
+  }
+  
+  id<XMPPUser> user = [[self availableUsers] objectAtIndex:[indexPath row]];
+  [[cell textLabel] setText:[user nickname]];
+
+  if ([user isOnline]) {
+    [[cell contentView] setBackgroundColor:[UIColor greenColor]];
+  }
+  else {
+    [[cell contentView] setBackgroundColor:[UIColor redColor]];
+  }
+  
+  return cell;
+}
+
+#pragma mark - FBChatController
+- (void)chatControllerRosterChanged:(FBChatController *)theClient
+{
+  NSArray *availableUsers = [theClient whoIsAvailable];
+  DDLogVerbose(@"%@", availableUsers);
+  
+  [self setAvailableUsers:availableUsers];
+  [[self tableView] reloadData];
+}
 @end

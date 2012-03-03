@@ -16,4 +16,5 @@
     didAuthenticateSuccessfully:(BOOL)theSuccessFlag
                error:(NSError *)theError;
 
+- (void)chatControllerRosterChanged:(FBChatController *)theClient;
 @end

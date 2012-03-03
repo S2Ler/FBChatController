@@ -16,4 +16,8 @@ FBChatControllerDelegate,
 FBChatControllerMessengerDelegate
 >
 
+@property (nonatomic, retain) FBChatController *chatController;
+
+@property (retain, nonatomic) IBOutlet UITableView *tableView;
+
 @end

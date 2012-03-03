@@ -2,6 +2,7 @@
 #pragma mark - include
 #import "FBChatController.h"
 #import "FBChatMessengerModule.h"
+#import "XMPPReconnect.h"
 #import "XMPP.h"
 #import "FBChatControllerErrors.h"
 #import "XMPPIDTracker.h"
@@ -106,6 +107,12 @@
   [[self xmppStream] sendElement:unavailablePresense];  
 }
 
+- (NSArray *)whoIsAvailable
+{
+#warning returns all users, but show only available users
+  return [[self roster] sortedUsersByAvailabilityName];
+}
+
 #pragma mark - initialization of XMPP Stream
 
 - (void)setupRoster
@@ -113,11 +120,13 @@
   XMPPRosterMemoryStorage *memoryStorage 
   = [[[XMPPRosterMemoryStorage alloc] init] autorelease];
   
-  [self setRoster:
+  [self setRoster:   
    [[[FBChatRosterClient alloc] initWithRosterStorage:memoryStorage] autorelease]];
+  [[self roster] addDelegate:self
+               delegateQueue:dispatch_get_main_queue()];    
   
   [[self roster] activate:[self xmppStream]];
-  [[self xmppStream] registerModule:[self roster]];
+  [[self xmppStream] registerModule:[self roster]];  
 }
 
 - (void)setupChatMessenger
@@ -128,9 +137,19 @@
   [[self xmppStream] registerModule:[self chat]];
 }
 
+- (void)setupAutoreconnect
+{
+  XMPPReconnect *reconnector = [[[XMPPReconnect alloc] init] autorelease];
+  [reconnector setAutoReconnect:YES];
+  [reconnector setReconnectDelay:1.0];
+
+  [[self xmppStream] registerModule:reconnector];
+}
+
 - (void)setupXMPPStream {
   XMPPStream *stream
   = [[[XMPPStream alloc] initWithFacebookAppId:[self FBAppID]] autorelease];  
+
   [self setXmppStream:stream];
   
   [stream addDelegate:self
@@ -138,6 +157,7 @@
 
   [self setupRoster];
   [self setupChatMessenger];
+  [self setupAutoreconnect];
   
   /** NOTE: TBPresenseModule have to initialized after TBPubSubModule as it uses it */
 //  [TBPubSubModule activateSharedInstanceWithStream:stream
@@ -253,4 +273,13 @@
   }
 }
 
+#pragma mark - XMPPRosterDelegate
+- (void)xmppRosterDidChange:(XMPPRosterMemoryStorage *)sender
+{
+  if ([[self authDelegate] 
+       respondsToSelector:@selector(chatControllerRosterChanged:)] == YES) 
+  {
+    [[self authDelegate] chatControllerRosterChanged:self];
+  }
+}
 @end

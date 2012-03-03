@@ -40,10 +40,11 @@
 {
   [self setChat:[[[FBChatController alloc] initWithAppID:APP_ID
                                            FBAccessToken:[[self facebook] accessToken] withDelegate:[self viewController]] autorelease]];
+  [[self viewController] setChatController:[self chat]];
   NSError *error = [[self chat] signInWithOnChatInputDelegate:[self viewController]];
   if (error != nil) {
     DDLogError(@"%@", error);
-  }
+  }  
 }
 
 - (BOOL)            application:(UIApplication *)application 
@@ -54,7 +55,7 @@
   
   self.window = [[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
   // Override point for customization after application launch.
-  self.viewController = [[[FCViewController alloc] initWithNibName:@"FCViewController" bundle:nil] autorelease];
+  self.viewController = [[[FCViewController alloc] init] autorelease];
   self.window.rootViewController = self.viewController;
   [self.window makeKeyAndVisible];
   

@@ -18,7 +18,8 @@ XMPPStreamDelegate
     Connection errors is sent to delegate specified in 'init' method.
  */
 - (NSError *)signInWithOnChatInputDelegate:(id<FBChatControllerMessengerDelegate>)theDelegate;
-
 - (void)signOut;
+
+- (NSArray *)whoIsAvailable;
 
 @end
