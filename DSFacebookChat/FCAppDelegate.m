@@ -7,32 +7,50 @@
 //
 
 #import "FCAppDelegate.h"
-
+#import "FBChatController.h"
+#import "DDTTYLogger.h"
+#import "DDASLLogger.h"
 #import "FCViewController.h"
 
 #define APP_ID @"243173989101903"
 
 @interface FCAppDelegate()
 @property (nonatomic, retain) Facebook *facebook;
+@property (nonatomic, retain) FBChatController *chat;
+
+- (void)setupChat;
 @end
 
 @implementation FCAppDelegate
 @synthesize facebook = _facebook;
-
+@synthesize chat = _chat;
 @synthesize window = _window;
 @synthesize viewController = _viewController;
 
 - (void)dealloc
 {
+  [_chat release];
   [_window release];
   [_viewController release];
   [_facebook release];
   [super dealloc];
 }
 
+- (void)setupChat
+{
+  [self setChat:[[[FBChatController alloc] initWithAppID:APP_ID
+                                           FBAccessToken:[[self facebook] accessToken] withDelegate:nil] autorelease]];
+  NSError *error = [[self chat] connect];
+  if (error != nil) {
+    DDLogError(@"%@", error);
+  }
+}
+
 - (BOOL)            application:(UIApplication *)application 
   didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+  [DDLog addLogger:[DDTTYLogger sharedInstance]];
+  [DDLog addLogger:[DDASLLogger sharedInstance]];
   _facebook = [[Facebook alloc] initWithAppId:APP_ID andDelegate:self];
   NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
   if ([defaults objectForKey:@"FBAccessTokenKey"] 
@@ -46,6 +64,9 @@
                             nil];
     [_facebook authorize:permissions];
     [permissions release];
+  }
+  else {
+    [self setupChat];
   }
   
   self.window = [[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
@@ -72,13 +93,14 @@
   [defaults setObject:[[self facebook] accessToken] forKey:@"FBAccessTokenKey"];
   [defaults setObject:[[self facebook] expirationDate] forKey:@"FBExpirationDateKey"];
   [defaults synchronize];
-  
+  [self setupChat];
 }
 
 - (void)fbDidExtendToken:(NSString*)accessToken
                expiresAt:(NSDate*)expiresAt
 {
-  
+  DDLogVerbose(@"accessToke: %@, expiredAt: %@", accessToken, expiresAt);
+  [self setupChat];
 }
 
 - (void)fbDidLogout
