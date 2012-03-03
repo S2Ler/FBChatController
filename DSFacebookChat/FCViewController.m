@@ -9,6 +9,7 @@
 #import "FCViewController.h"
 #import "FBChatController.h"
 #import "XMPPUser.h"
+#import "XMPPMessage+Chat.h"
 
 @interface FCViewController ()
 @property (nonatomic, retain) NSArray *availableUsers;
@@ -32,15 +33,17 @@
 didAuthenticateSuccessfully:(BOOL)theSuccessFlag
                error:(NSError *)theError
 {  
-  UIAlertView *alert 
-  = [[UIAlertView alloc] 
-     initWithTitle:[NSString stringWithFormat:@"Error Domain: %@", [theError domain]]
-     message:[NSString stringWithFormat:@"Error Code: %d", [theError code]]                                                          
-     delegate:nil 
-     cancelButtonTitle:@"OK"
-     otherButtonTitles:nil];
-  [alert show];   
-  [alert release];
+  if (theSuccessFlag == NO) {
+    UIAlertView *alert 
+    = [[UIAlertView alloc] 
+       initWithTitle:[NSString stringWithFormat:@"Error Domain: %@", [theError domain]]
+       message:[NSString stringWithFormat:@"Error Code: %d", [theError code]]                                                          
+       delegate:nil 
+       cancelButtonTitle:@"OK"
+       otherButtonTitles:nil];
+    [alert show];   
+    [alert release];
+  }
 }
 
 - (void)didReceiveMemoryWarning
