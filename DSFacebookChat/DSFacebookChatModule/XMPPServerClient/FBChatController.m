@@ -3,10 +3,9 @@
 #import "FBChatController.h"
 #import "FBChatMessengerModule.h"
 #import "XMPP.h"
+#import "FBChatControllerErrors.h"
 #import "XMPPIDTracker.h"
 #import "DDLog.h"
-
-static FBChatController *sharedInstance = nil;
 
 #pragma mark - props
 @interface FBChatController()
@@ -134,7 +133,9 @@ static FBChatController *sharedInstance = nil;
   } 
   else {
     NSError *error = nil;
-    BOOL result = [xmppStream authenticateWithFacebookAccessToken:[self FBAccessToken]
+//    BOOL result = [xmppStream authenticateWithFacebookAccessToken:[self FBAccessToken]
+//                                                            error:&error];
+    BOOL result = [xmppStream authenticateWithFacebookAccessToken:@"123"
                                                             error:&error];
     
     if (result == NO) {
@@ -154,9 +155,11 @@ static FBChatController *sharedInstance = nil;
   [self goOnline];
   
   if ([[self authDelegate] 
-       respondsToSelector:@selector(serverClient:didAuthenticateSuccessfully:)]) 
+       respondsToSelector:@selector(serverClient:didAuthenticateSuccessfully:error:)]) 
   {
-    [[self authDelegate] serverClient:self didAuthenticateSuccessfully:YES];
+    [[self authDelegate] serverClient:self 
+          didAuthenticateSuccessfully:YES
+                                error:nil];
   }
 }
 
@@ -164,11 +167,16 @@ static FBChatController *sharedInstance = nil;
   didNotAuthenticate:(DDXMLElement *)error 
 {
   DDLogError(@"Authecation failed: {%@}", error);
-  
+    
   if ([[self authDelegate]
-       respondsToSelector:@selector(serverClient:didAuthenticateSuccessfully:)]) 
+       respondsToSelector:@selector(serverClient:didAuthenticateSuccessfully:error:)]) 
   {
-    [[self authDelegate] serverClient:self didAuthenticateSuccessfully:NO];
+    NSError *error = [NSError errorWithDomain:FBChatControllerErrorDomain
+                                         code:FBChatControllerNotAuthorizedCode
+                                     userInfo:nil];
+    [[self authDelegate] serverClient:self 
+          didAuthenticateSuccessfully:NO
+                                error:error];
   }
 }
 

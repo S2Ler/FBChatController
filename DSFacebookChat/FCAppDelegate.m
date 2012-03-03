@@ -40,7 +40,7 @@
 {
   [self setChat:[[[FBChatController alloc] initWithAppID:APP_ID
                                            FBAccessToken:[[self facebook] accessToken] withDelegate:nil] autorelease]];
-  NSError *error = [[self chat] connect];
+  NSError *error = [[self chat] signInWithOnChatInputDelegate:nil];
   if (error != nil) {
     DDLogError(@"%@", error);
   }

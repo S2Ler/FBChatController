@@ -10,5 +10,6 @@
             fromUser:(NSString *)theUserJID;
 
 - (void)serverClient:(FBChatController *)theClient 
-    didAuthenticateSuccessfully:(BOOL)theSuccessFlag;
+    didAuthenticateSuccessfully:(BOOL)theSuccessFlag
+               error:(NSError *)theError;
 @end

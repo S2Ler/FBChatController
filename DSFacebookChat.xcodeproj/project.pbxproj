@@ -136,6 +136,7 @@
 		AEB6723E14E96967007C7F9D /* SBJsonParser.m in Sources */ = {isa = PBXBuildFile; fileRef = AEB6722814E96967007C7F9D /* SBJsonParser.m */; };
 		AEB6723F14E96967007C7F9D /* SBJsonWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = AEB6722A14E96967007C7F9D /* SBJsonWriter.m */; };
 		AEB6724014E96967007C7F9D /* SBJsonWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = AEB6722A14E96967007C7F9D /* SBJsonWriter.m */; };
+		AEE624981502305E00FFCD96 /* FBChatControllerErrors.m in Sources */ = {isa = PBXBuildFile; fileRef = AEE624971502305E00FFCD96 /* FBChatControllerErrors.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -390,6 +391,8 @@
 		AEB6722914E96967007C7F9D /* SBJsonWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SBJsonWriter.h; sourceTree = "<group>"; };
 		AEB6722A14E96967007C7F9D /* SBJsonWriter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SBJsonWriter.m; sourceTree = "<group>"; };
 		AEE6249415021B9000FFCD96 /* FBChatControllerMessengerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBChatControllerMessengerDelegate.h; sourceTree = "<group>"; };
+		AEE624961502305E00FFCD96 /* FBChatControllerErrors.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBChatControllerErrors.h; sourceTree = "<group>"; };
+		AEE624971502305E00FFCD96 /* FBChatControllerErrors.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FBChatControllerErrors.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -881,6 +884,7 @@
 		AE9BB4C214FE9F6300A7642B /* DSFacebookChatModule */ = {
 			isa = PBXGroup;
 			children = (
+				AEE624951502303F00FFCD96 /* Errors */,
 				AE4AEDC314FEA9CA001AA049 /* XMPPServerClient */,
 				AE9BB4C314FE9F7F00A7642B /* Messenger */,
 				AE9BB4EC14FEA78E00A7642B /* SupportClasses */,
@@ -1041,6 +1045,15 @@
 				AEB6722A14E96967007C7F9D /* SBJsonWriter.m */,
 			);
 			path = JSON;
+			sourceTree = "<group>";
+		};
+		AEE624951502303F00FFCD96 /* Errors */ = {
+			isa = PBXGroup;
+			children = (
+				AEE624961502305E00FFCD96 /* FBChatControllerErrors.h */,
+				AEE624971502305E00FFCD96 /* FBChatControllerErrors.m */,
+			);
+			path = Errors;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1254,6 +1267,7 @@
 				AE9BB4F614FEA85F00A7642B /* NSString+Chat.m in Sources */,
 				AE4AEDC714FEA9CB001AA049 /* FBChatController.m in Sources */,
 				AE4AEDCB14FEB270001AA049 /* FCConstants.m in Sources */,
+				AEE624981502305E00FFCD96 /* FBChatControllerErrors.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
