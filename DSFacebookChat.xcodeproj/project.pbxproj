@@ -136,6 +136,7 @@
 		AEB6723E14E96967007C7F9D /* SBJsonParser.m in Sources */ = {isa = PBXBuildFile; fileRef = AEB6722814E96967007C7F9D /* SBJsonParser.m */; };
 		AEB6723F14E96967007C7F9D /* SBJsonWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = AEB6722A14E96967007C7F9D /* SBJsonWriter.m */; };
 		AEB6724014E96967007C7F9D /* SBJsonWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = AEB6722A14E96967007C7F9D /* SBJsonWriter.m */; };
+		AED363C0150247AF00E0EF46 /* FBChatRosterClient.m in Sources */ = {isa = PBXBuildFile; fileRef = AED363BF150247AF00E0EF46 /* FBChatRosterClient.m */; };
 		AEE624981502305E00FFCD96 /* FBChatControllerErrors.m in Sources */ = {isa = PBXBuildFile; fileRef = AEE624971502305E00FFCD96 /* FBChatControllerErrors.m */; };
 /* End PBXBuildFile section */
 
@@ -390,6 +391,8 @@
 		AEB6722814E96967007C7F9D /* SBJsonParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SBJsonParser.m; sourceTree = "<group>"; };
 		AEB6722914E96967007C7F9D /* SBJsonWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SBJsonWriter.h; sourceTree = "<group>"; };
 		AEB6722A14E96967007C7F9D /* SBJsonWriter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SBJsonWriter.m; sourceTree = "<group>"; };
+		AED363BE150247AF00E0EF46 /* FBChatRosterClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBChatRosterClient.h; sourceTree = "<group>"; };
+		AED363BF150247AF00E0EF46 /* FBChatRosterClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FBChatRosterClient.m; sourceTree = "<group>"; };
 		AEE6249415021B9000FFCD96 /* FBChatControllerMessengerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBChatControllerMessengerDelegate.h; sourceTree = "<group>"; };
 		AEE624961502305E00FFCD96 /* FBChatControllerErrors.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBChatControllerErrors.h; sourceTree = "<group>"; };
 		AEE624971502305E00FFCD96 /* FBChatControllerErrors.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FBChatControllerErrors.m; sourceTree = "<group>"; };
@@ -425,7 +428,7 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		AE4AEDC314FEA9CA001AA049 /* XMPPServerClient */ = {
+		AE4AEDC314FEA9CA001AA049 /* FBChatController */ = {
 			isa = PBXGroup;
 			children = (
 				AE4AEDC414FEA9CA001AA049 /* FBChatController.h */,
@@ -433,6 +436,7 @@
 				AE4AEDC614FEA9CB001AA049 /* FBChatControllerDelegate.h */,
 				AEE6249415021B9000FFCD96 /* FBChatControllerMessengerDelegate.h */,
 			);
+			name = FBChatController;
 			path = XMPPServerClient;
 			sourceTree = "<group>";
 		};
@@ -884,8 +888,9 @@
 		AE9BB4C214FE9F6300A7642B /* DSFacebookChatModule */ = {
 			isa = PBXGroup;
 			children = (
+				AED363BC1502478700E0EF46 /* Roster */,
 				AEE624951502303F00FFCD96 /* Errors */,
-				AE4AEDC314FEA9CA001AA049 /* XMPPServerClient */,
+				AE4AEDC314FEA9CA001AA049 /* FBChatController */,
 				AE9BB4C314FE9F7F00A7642B /* Messenger */,
 				AE9BB4EC14FEA78E00A7642B /* SupportClasses */,
 				AE9BB4E814FEA77200A7642B /* Additions */,
@@ -1045,6 +1050,15 @@
 				AEB6722A14E96967007C7F9D /* SBJsonWriter.m */,
 			);
 			path = JSON;
+			sourceTree = "<group>";
+		};
+		AED363BC1502478700E0EF46 /* Roster */ = {
+			isa = PBXGroup;
+			children = (
+				AED363BE150247AF00E0EF46 /* FBChatRosterClient.h */,
+				AED363BF150247AF00E0EF46 /* FBChatRosterClient.m */,
+			);
+			path = Roster;
 			sourceTree = "<group>";
 		};
 		AEE624951502303F00FFCD96 /* Errors */ = {
@@ -1268,6 +1282,7 @@
 				AE4AEDC714FEA9CB001AA049 /* FBChatController.m in Sources */,
 				AE4AEDCB14FEB270001AA049 /* FCConstants.m in Sources */,
 				AEE624981502305E00FFCD96 /* FBChatControllerErrors.m in Sources */,
+				AED363C0150247AF00E0EF46 /* FBChatRosterClient.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

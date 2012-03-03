@@ -6,6 +6,8 @@
 #import "FBChatControllerErrors.h"
 #import "XMPPIDTracker.h"
 #import "DDLog.h"
+#import "FBChatRosterClient.h"
+#import "XMPPRosterMemoryStorage.h"
 
 #pragma mark - props
 @interface FBChatController()
@@ -18,6 +20,7 @@
 @property (assign) id<FBChatControllerDelegate> authDelegate;
 @property (assign) id<FBChatControllerMessengerDelegate> messengerDelegate;
 @property (retain) XMPPJID *JID;
+@property (retain) FBChatRosterClient *roster;
 
 - (void)setupXMPPStream;
 - (void)goOnline;
@@ -34,8 +37,10 @@
 @synthesize IDTracker = _IDTracker;
 @synthesize FBAppID = _FBAppID;
 @synthesize messengerDelegate = _messengerDelegate;
+@synthesize roster = _roster;
 
 - (void)dealloc {
+  [_roster release];
   [_FBAccessToken release];
   [_FBAppID release];
   [_IDTracker release];
@@ -99,12 +104,33 @@
 }
 
 #pragma mark - initialization of XMPP Stream
+
+- (void)setupRoster
+{
+  XMPPRosterMemoryStorage *memoryStorage 
+  = [[[XMPPRosterMemoryStorage alloc] init] autorelease];
+  
+  [self setRoster:
+   [[[FBChatRosterClient alloc] initWithRosterStorage:memoryStorage] autorelease]];
+  
+  [[self roster] activate:[self xmppStream]];
+  [[self xmppStream] registerModule:[self roster]];
+}
+
+- (void)setupChatMessenger
+{
+  
+}
+
 - (void)setupXMPPStream {
-  XMPPStream *stream = [[XMPPStream alloc] initWithFacebookAppId:[self FBAppID]];
+  XMPPStream *stream
+  = [[[XMPPStream alloc] initWithFacebookAppId:[self FBAppID]] autorelease];  
+  [self setXmppStream:stream];
+  
   [stream addDelegate:self
         delegateQueue:dispatch_get_main_queue()];
 
-//  [TBRosterClient activateSharedInstanceWithStream:stream];
+  [self setupRoster];
   [FBChatMessengerModule activateSharedInstanceWithStream:stream];
   
   /** NOTE: TBPresenseModule have to initialized after TBPubSubModule as it uses it */
@@ -115,7 +141,6 @@
 //  [[TBRosterClient sharedInstance] setAutoRoster:YES];
 //  [[TBSearchModule sharedInstance] registerWithStream:stream];//TODO: refactor as TBRosterClient
   
-  [self setXmppStream:stream];
   [stream release];
 }
 
