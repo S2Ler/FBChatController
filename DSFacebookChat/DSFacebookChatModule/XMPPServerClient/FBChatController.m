@@ -149,7 +149,7 @@
 - (void)setupXMPPStream {
   XMPPStream *stream
   = [[[XMPPStream alloc] initWithFacebookAppId:[self FBAppID]] autorelease];  
-
+  [stream setKeepAliveInterval:20];
   [self setXmppStream:stream];
   
   [stream addDelegate:self
