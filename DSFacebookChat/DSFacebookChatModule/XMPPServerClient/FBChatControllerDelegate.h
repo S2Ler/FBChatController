@@ -9,7 +9,11 @@
   didReceivePresense:(NSString *)thePresenseType
             fromUser:(NSString *)theUserJID;
 
-- (void)serverClient:(FBChatController *)theClient 
+/** 
+ \param theError comes directly from XMPPFramework
+ */
+- (void)chatController:(FBChatController *)theClient 
     didAuthenticateSuccessfully:(BOOL)theSuccessFlag
                error:(NSError *)theError;
+
 @end

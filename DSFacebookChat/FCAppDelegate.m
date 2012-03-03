@@ -39,8 +39,8 @@
 - (void)setupChat
 {
   [self setChat:[[[FBChatController alloc] initWithAppID:APP_ID
-                                           FBAccessToken:[[self facebook] accessToken] withDelegate:nil] autorelease]];
-  NSError *error = [[self chat] signInWithOnChatInputDelegate:nil];
+                                           FBAccessToken:[[self facebook] accessToken] withDelegate:[self viewController]] autorelease]];
+  NSError *error = [[self chat] signInWithOnChatInputDelegate:[self viewController]];
   if (error != nil) {
     DDLogError(@"%@", error);
   }
@@ -51,6 +51,13 @@
 {
   [DDLog addLogger:[DDTTYLogger sharedInstance]];
   [DDLog addLogger:[DDASLLogger sharedInstance]];
+  
+  self.window = [[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
+  // Override point for customization after application launch.
+  self.viewController = [[[FCViewController alloc] initWithNibName:@"FCViewController" bundle:nil] autorelease];
+  self.window.rootViewController = self.viewController;
+  [self.window makeKeyAndVisible];
+  
   _facebook = [[Facebook alloc] initWithAppId:APP_ID andDelegate:self];
   NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
   if ([defaults objectForKey:@"FBAccessTokenKey"] 
@@ -69,12 +76,7 @@
     [self setupChat];
   }
   
-  self.window = [[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
-  // Override point for customization after application launch.
-  self.viewController = [[[FCViewController alloc] initWithNibName:@"FCViewController" bundle:nil] autorelease];
-  self.window.rootViewController = self.viewController;
-    [self.window makeKeyAndVisible];
-    return YES;
+  return YES;
 }
 
 // Pre 4.2 support

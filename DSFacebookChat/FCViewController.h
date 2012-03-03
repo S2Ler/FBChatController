@@ -7,7 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "FBChatControllerMessengerDelegate.h"
+#import "FBChatControllerDelegate.h"
 
 @interface FCViewController : UIViewController
+<
+FBChatControllerDelegate,
+FBChatControllerMessengerDelegate
+>
 
 @end

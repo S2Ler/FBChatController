@@ -1102,7 +1102,7 @@
 			isa = PBXProject;
 			attributes = {
 				CLASSPREFIX = FC;
-				LastUpgradeCheck = 0420;
+				LastUpgradeCheck = 0430;
 				ORGANIZATIONNAME = "AS IS";
 			};
 			buildConfigurationList = AEB671D314E966CA007C7F9D /* Build configuration list for PBXProject "DSFacebookChat" */;

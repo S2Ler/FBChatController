@@ -30,7 +30,7 @@
 @synthesize FBAccessToken = _FBAccessToken;
 @synthesize xmppStream = _xmppStream;
 @synthesize JID = _JID;
-@synthesize authDelegate = _delegate;
+@synthesize authDelegate = _authDelegate;
 @synthesize IDTracker = _IDTracker;
 @synthesize FBAppID = _FBAppID;
 @synthesize messengerDelegate = _messengerDelegate;
@@ -57,6 +57,7 @@
     _modules = [[NSMutableArray alloc] init];                 
     _FBAppID = [theAppID copy];
     _FBAccessToken = [theFBAccessToken copy];
+    _authDelegate = theDelegate;
 	}
 	return self;
 }
@@ -133,10 +134,10 @@
   } 
   else {
     NSError *error = nil;
-//    BOOL result = [xmppStream authenticateWithFacebookAccessToken:[self FBAccessToken]
-//                                                            error:&error];
-    BOOL result = [xmppStream authenticateWithFacebookAccessToken:@"123"
+    BOOL result = [xmppStream authenticateWithFacebookAccessToken:[self FBAccessToken]
                                                             error:&error];
+//    BOOL result = [xmppStream authenticateWithFacebookAccessToken:@"123"
+//                                                            error:&error];
     
     if (result == NO) {
       DDLogError(@"%@: Error in xmpp auth: %@", THIS_FILE, error);
@@ -147,6 +148,15 @@
 - (void)xmppStreamDidDisconnect:(XMPPStream *)sender 
                       withError:(NSError *)error 
 {
+ 
+  if ([[self authDelegate] 
+       respondsToSelector:@selector(chatController:didAuthenticateSuccessfully:error:)]) 
+  {
+    [[self authDelegate] chatController:self 
+            didAuthenticateSuccessfully:YES
+                                  error:error];
+  }
+
   DDLogError(@"Disconnecting from server with error: {%@}", error);             
 }
 
@@ -155,9 +165,9 @@
   [self goOnline];
   
   if ([[self authDelegate] 
-       respondsToSelector:@selector(serverClient:didAuthenticateSuccessfully:error:)]) 
+       respondsToSelector:@selector(chatController:didAuthenticateSuccessfully:error:)]) 
   {
-    [[self authDelegate] serverClient:self 
+    [[self authDelegate] chatController:self 
           didAuthenticateSuccessfully:YES
                                 error:nil];
   }
@@ -169,12 +179,12 @@
   DDLogError(@"Authecation failed: {%@}", error);
     
   if ([[self authDelegate]
-       respondsToSelector:@selector(serverClient:didAuthenticateSuccessfully:error:)]) 
+       respondsToSelector:@selector(chatController:didAuthenticateSuccessfully:error:)]) 
   {
     NSError *error = [NSError errorWithDomain:FBChatControllerErrorDomain
                                          code:FBChatControllerNotAuthorizedCode
                                      userInfo:nil];
-    [[self authDelegate] serverClient:self 
+    [[self authDelegate] chatController:self 
           didAuthenticateSuccessfully:NO
                                 error:error];
   }
@@ -189,12 +199,12 @@
   DDLogInfo(@"Receive Presense: type: {%@}, from user: {%@}", 
             presenceType, presenceFromUser);
 
-  if ([_delegate
+  if ([[self authDelegate]
        respondsToSelector:@selector(serverClient:didReceivePresense:fromUser:)]) 
   {
-    [_delegate serverClient:self
-         didReceivePresense:presenceType
-                   fromUser:presenceFromUser];
+    [[self authDelegate] serverClient:self
+                   didReceivePresense:presenceType
+                             fromUser:presenceFromUser];
   }
 }
 
