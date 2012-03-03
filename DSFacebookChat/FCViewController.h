@@ -13,7 +13,9 @@
 @interface FCViewController : UIViewController
 <
 FBChatControllerDelegate,
-FBChatControllerMessengerDelegate
+FBChatControllerMessengerDelegate,
+UITableViewDelegate,
+UITableViewDataSource
 >
 
 @property (nonatomic, retain) FBChatController *chatController;

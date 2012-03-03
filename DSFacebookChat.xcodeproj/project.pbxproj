@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		AE4AEDC714FEA9CB001AA049 /* FBChatController.m in Sources */ = {isa = PBXBuildFile; fileRef = AE4AEDC514FEA9CA001AA049 /* FBChatController.m */; };
 		AE4AEDCB14FEB270001AA049 /* FCConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = AE4AEDCA14FEB270001AA049 /* FCConstants.m */; };
+		AE801E831502A28800E91576 /* FCSendMessageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AE801E811502A28800E91576 /* FCSendMessageViewController.m */; };
+		AE801E841502A28800E91576 /* FCSendMessageViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = AE801E821502A28800E91576 /* FCSendMessageViewController.xib */; };
 		AE9BB23914FE997B00A7642B /* FBFrictionlessRequestSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = AE9BB23814FE997B00A7642B /* FBFrictionlessRequestSettings.m */; };
 		AE9BB46214FE9A7C00A7642B /* NSData+XMPP.m in Sources */ = {isa = PBXBuildFile; fileRef = AE9BB37E14FE9A7C00A7642B /* NSData+XMPP.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		AE9BB46314FE9A7C00A7642B /* NSNumber+XMPP.m in Sources */ = {isa = PBXBuildFile; fileRef = AE9BB38014FE9A7C00A7642B /* NSNumber+XMPP.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
@@ -156,6 +158,9 @@
 		AE4AEDC614FEA9CB001AA049 /* FBChatControllerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBChatControllerDelegate.h; sourceTree = "<group>"; };
 		AE4AEDC914FEB270001AA049 /* FCConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCConstants.h; sourceTree = "<group>"; };
 		AE4AEDCA14FEB270001AA049 /* FCConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FCConstants.m; sourceTree = "<group>"; };
+		AE801E801502A28800E91576 /* FCSendMessageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCSendMessageViewController.h; sourceTree = "<group>"; };
+		AE801E811502A28800E91576 /* FCSendMessageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FCSendMessageViewController.m; sourceTree = "<group>"; };
+		AE801E821502A28800E91576 /* FCSendMessageViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FCSendMessageViewController.xib; sourceTree = "<group>"; };
 		AE9BB23714FE997B00A7642B /* FBFrictionlessRequestSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBFrictionlessRequestSettings.h; sourceTree = "<group>"; };
 		AE9BB23814FE997B00A7642B /* FBFrictionlessRequestSettings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FBFrictionlessRequestSettings.m; sourceTree = "<group>"; };
 		AE9BB37D14FE9A7C00A7642B /* NSData+XMPP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+XMPP.h"; sourceTree = "<group>"; };
@@ -877,6 +882,9 @@
 				AEB671ED14E966CC007C7F9D /* FCAppDelegate.m */,
 				AEB671EF14E966CC007C7F9D /* FCViewController.h */,
 				AEB671F014E966CC007C7F9D /* FCViewController.m */,
+				AE801E801502A28800E91576 /* FCSendMessageViewController.h */,
+				AE801E811502A28800E91576 /* FCSendMessageViewController.m */,
+				AE801E821502A28800E91576 /* FCSendMessageViewController.xib */,
 				AEB671F214E966CC007C7F9D /* FCViewController.xib */,
 				AE4AEDC914FEB270001AA049 /* FCConstants.h */,
 				AE4AEDCA14FEB270001AA049 /* FCConstants.m */,
@@ -1147,6 +1155,7 @@
 				AEB6722D14E96967007C7F9D /* FBDialog.bundle in Resources */,
 				AE9BB4B614FE9A7C00A7642B /* README.txt in Resources */,
 				AE9BB4BB14FE9A7C00A7642B /* libidn-1.15.tar.gz in Resources */,
+				AE801E841502A28800E91576 /* FCSendMessageViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1283,6 +1292,7 @@
 				AE4AEDCB14FEB270001AA049 /* FCConstants.m in Sources */,
 				AEE624981502305E00FFCD96 /* FBChatControllerErrors.m in Sources */,
 				AED363C0150247AF00E0EF46 /* FBChatRosterClient.m in Sources */,
+				AE801E831502A28800E91576 /* FCSendMessageViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

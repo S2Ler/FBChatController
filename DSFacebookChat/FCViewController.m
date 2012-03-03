@@ -10,6 +10,7 @@
 #import "FBChatController.h"
 #import "XMPPUser.h"
 #import "XMPPMessage+Chat.h"
+#import "FCSendMessageViewController.h"
 
 @interface FCViewController ()
 @property (nonatomic, retain) NSArray *availableUsers;
@@ -130,6 +131,22 @@ didAuthenticateSuccessfully:(BOOL)theSuccessFlag
   }
   
   return cell;
+}
+
+- (void)        tableView:(UITableView *)tableView
+  didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+  [tableView deselectRowAtIndexPath:indexPath animated:YES];
+  
+  id<XMPPUser> selectedUser = [[self availableUsers] objectAtIndex:[indexPath row]];
+  
+  FCSendMessageViewController *sendController
+  = [[FCSendMessageViewController alloc] initWithHandler:^(NSString *theMessage) {
+    [[self chatController] sendMessage:theMessage to:[selectedUser jid]];
+    [self dismissModalViewControllerAnimated:YES];
+  }];
+  [self presentModalViewController:sendController animated:YES];
+  [sendController release];
 }
 
 #pragma mark - FBChatController

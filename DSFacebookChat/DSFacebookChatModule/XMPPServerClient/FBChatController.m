@@ -2,6 +2,7 @@
 #pragma mark - include
 #import "FBChatController.h"
 #import "FBChatMessengerModule.h"
+#import "FBChatMessageType.h"
 #import "XMPPReconnect.h"
 #import "FBChatSession.h"
 #import "XMPP.h"
@@ -112,6 +113,12 @@
 {
 #warning returns all users, but show only available users
   return [[self roster] sortedUsersByAvailabilityName];
+}
+
+- (void)sendMessage:(NSString*)msg to:(XMPPJID *)theRecipient
+{
+  [[[self chat] chatWithJID:theRecipient] sendMessage:msg 
+                                                 type:messageTypes.standard];
 }
 
 #pragma mark - initialization of XMPP Stream

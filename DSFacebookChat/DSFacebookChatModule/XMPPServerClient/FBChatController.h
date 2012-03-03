@@ -21,5 +21,6 @@ XMPPStreamDelegate
 - (void)signOut;
 
 - (NSArray *)whoIsAvailable;
+- (void)sendMessage:(NSString*)msg to:(XMPPJID *)theRecipient;
 
 @end
