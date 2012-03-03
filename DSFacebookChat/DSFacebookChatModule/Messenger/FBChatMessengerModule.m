@@ -7,7 +7,12 @@
 #import "XMPPStream.h"
 #import "XMPPMessage.h"
 
-static FBChatMessengerModule *sharedInstance = nil;
+@interface FBChatMessengerModule()
+{
+  /** key is XMPPJID with whom chat is open */
+  NSMutableDictionary *_chats;
+}
+@end
 
 @implementation FBChatMessengerModule
 
@@ -19,22 +24,8 @@ static FBChatMessengerModule *sharedInstance = nil;
   return self;
 }
 
-+ (FBChatMessengerModule *)sharedInstance
-{ 
-  return sharedInstance;
-}
-
 - (NSString *)moduleName {
   return NSStringFromClass([self class]);
-}
-
-+ (void)activateSharedInstanceWithStream:(XMPPStream *)theStream {
-  static dispatch_once_t once;
-  dispatch_once(&once, ^ {
-    sharedInstance = [[FBChatMessengerModule alloc] initWithDispatchQueue:nil];
-    [sharedInstance activate:theStream];
-    [theStream registerModule:sharedInstance];
-  });  
 }
 
 #pragma mark - public

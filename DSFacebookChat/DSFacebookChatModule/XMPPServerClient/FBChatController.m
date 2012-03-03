@@ -21,6 +21,7 @@
 @property (assign) id<FBChatControllerMessengerDelegate> messengerDelegate;
 @property (retain) XMPPJID *JID;
 @property (retain) FBChatRosterClient *roster;
+@property (retain) FBChatMessengerModule *chat;
 
 - (void)setupXMPPStream;
 - (void)goOnline;
@@ -38,8 +39,10 @@
 @synthesize FBAppID = _FBAppID;
 @synthesize messengerDelegate = _messengerDelegate;
 @synthesize roster = _roster;
+@synthesize chat = _chat;
 
 - (void)dealloc {
+  [_chat release];
   [_roster release];
   [_FBAccessToken release];
   [_FBAppID release];
@@ -119,7 +122,10 @@
 
 - (void)setupChatMessenger
 {
-  
+  [self setChat:[[[FBChatMessengerModule alloc] initWithDispatchQueue:nil] autorelease]];
+   
+  [[self chat] activate:[self xmppStream]];
+  [[self xmppStream] registerModule:[self chat]];
 }
 
 - (void)setupXMPPStream {
@@ -131,7 +137,7 @@
         delegateQueue:dispatch_get_main_queue()];
 
   [self setupRoster];
-  [FBChatMessengerModule activateSharedInstanceWithStream:stream];
+  [self setupChatMessenger];
   
   /** NOTE: TBPresenseModule have to initialized after TBPubSubModule as it uses it */
 //  [TBPubSubModule activateSharedInstanceWithStream:stream
