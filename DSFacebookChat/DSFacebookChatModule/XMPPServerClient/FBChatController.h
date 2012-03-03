@@ -1,35 +1,24 @@
 
 #import <Foundation/Foundation.h>
 #import "FBChatControllerDelegate.h"
+#import "FBChatControllerMessengerDelegate.h"
 #import "XMPPStream.h"
-
-@class XMPPJID;
-@class XMPPIDTracker;
 
 @interface FBChatController : NSObject
 <
 XMPPStreamDelegate
 > 
 
-@property (assign) id<FBChatControllerDelegate> delegate;
-
-- (XMPPStream *)xmppStream;
-
-/** Works on main queue */
-- (XMPPIDTracker *)IDTracker;
-
-@property (retain) XMPPJID *JID;
-
 - (id)initWithAppID:(NSString *)theAppID  
       FBAccessToken:(NSString *)theFBAccessToken
        withDelegate:(id<FBChatControllerDelegate>)theDelegate;
 
-/** \return nil if connection is successful */
-- (NSError *)connect;
+/** 
+ \return An Error if something wrong with settings for FBChatController.
+    Connection errors is sent to delegate specified in 'init' method.
+ */
+- (NSError *)signInWithOnChatInputDelegate:(id<FBChatControllerMessengerDelegate>)theDelegate;
 
-- (void)disconnect;
-
-- (void)goOnline;
-- (void)goOffline;
+- (void)signOut;
 
 @end

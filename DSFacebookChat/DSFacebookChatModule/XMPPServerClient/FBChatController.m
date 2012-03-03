@@ -16,8 +16,14 @@ static FBChatController *sharedInstance = nil;
 @property (retain) XMPPIDTracker *IDTracker;
 @property (nonatomic, retain) NSString *FBAppID;
 @property (nonatomic, retain) NSString *FBAccessToken;
+@property (assign) id<FBChatControllerDelegate> authDelegate;
+@property (assign) id<FBChatControllerMessengerDelegate> messengerDelegate;
+@property (retain) XMPPJID *JID;
 
 - (void)setupXMPPStream;
+- (void)goOnline;
+- (void)goOffline;
+
 @end
 
 @implementation FBChatController
@@ -25,9 +31,10 @@ static FBChatController *sharedInstance = nil;
 @synthesize FBAccessToken = _FBAccessToken;
 @synthesize xmppStream = _xmppStream;
 @synthesize JID = _JID;
-@synthesize delegate = _delegate;
+@synthesize authDelegate = _delegate;
 @synthesize IDTracker = _IDTracker;
 @synthesize FBAppID = _FBAppID;
+@synthesize messengerDelegate = _messengerDelegate;
 
 - (void)dealloc {
   [_FBAccessToken release];
@@ -56,15 +63,16 @@ static FBChatController *sharedInstance = nil;
 }
 
 #pragma mark - public
-- (NSError *)connect {
+- (NSError *)signInWithOnChatInputDelegate:(id<FBChatControllerMessengerDelegate>)theDelegate
+{
+  [self setMessengerDelegate:theDelegate];
   [self setupXMPPStream];
   
   if (![[self xmppStream] isDisconnected]) {
     return nil;
   }
   
-  NSError *error = nil;
-  
+  NSError *error = nil;  
   if (![[self xmppStream] connect:&error]) {
     return error;
   }
@@ -72,7 +80,8 @@ static FBChatController *sharedInstance = nil;
   return nil;
 }
 
-- (void)disconnect {
+- (void)signOut 
+{
   DDLogInfo(@"Disconnecting from server");
   [self goOffline];
   [[self xmppStream] disconnect];
@@ -144,10 +153,10 @@ static FBChatController *sharedInstance = nil;
 {
   [self goOnline];
   
-  if ([[self delegate] 
+  if ([[self authDelegate] 
        respondsToSelector:@selector(serverClient:didAuthenticateSuccessfully:)]) 
   {
-    [[self delegate] serverClient:self didAuthenticateSuccessfully:YES];
+    [[self authDelegate] serverClient:self didAuthenticateSuccessfully:YES];
   }
 }
 
@@ -156,10 +165,10 @@ static FBChatController *sharedInstance = nil;
 {
   DDLogError(@"Authecation failed: {%@}", error);
   
-  if ([[self delegate]
+  if ([[self authDelegate]
        respondsToSelector:@selector(serverClient:didAuthenticateSuccessfully:)]) 
   {
-    [[self delegate] serverClient:self didAuthenticateSuccessfully:NO];
+    [[self authDelegate] serverClient:self didAuthenticateSuccessfully:NO];
   }
 }
 

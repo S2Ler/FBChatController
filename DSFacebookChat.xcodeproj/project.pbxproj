@@ -389,6 +389,7 @@
 		AEB6722814E96967007C7F9D /* SBJsonParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SBJsonParser.m; sourceTree = "<group>"; };
 		AEB6722914E96967007C7F9D /* SBJsonWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SBJsonWriter.h; sourceTree = "<group>"; };
 		AEB6722A14E96967007C7F9D /* SBJsonWriter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SBJsonWriter.m; sourceTree = "<group>"; };
+		AEE6249415021B9000FFCD96 /* FBChatControllerMessengerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBChatControllerMessengerDelegate.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -427,6 +428,7 @@
 				AE4AEDC414FEA9CA001AA049 /* FBChatController.h */,
 				AE4AEDC514FEA9CA001AA049 /* FBChatController.m */,
 				AE4AEDC614FEA9CB001AA049 /* FBChatControllerDelegate.h */,
+				AEE6249415021B9000FFCD96 /* FBChatControllerMessengerDelegate.h */,
 			);
 			path = XMPPServerClient;
 			sourceTree = "<group>";
