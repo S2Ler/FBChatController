@@ -141,4 +141,18 @@ didAuthenticateSuccessfully:(BOOL)theSuccessFlag
   [self setAvailableUsers:availableUsers];
   [[self tableView] reloadData];
 }
+
+- (void)chatController:(FBChatController *)theController
+  didReceiveNewMessage:(XMPPMessage *)theMessage
+{
+  UIAlertView *message 
+  = [[[UIAlertView alloc]
+      initWithTitle:[NSString stringWithFormat:@"from: %@; to: %@", 
+                     [theMessage fromStr], [theMessage toStr]]                    
+      message:[theMessage body]
+      delegate:nil 
+      cancelButtonTitle:@"OK"
+      otherButtonTitles:nil] autorelease];
+  [message show];
+}
 @end

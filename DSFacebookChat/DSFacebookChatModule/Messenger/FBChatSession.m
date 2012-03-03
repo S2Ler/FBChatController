@@ -115,7 +115,7 @@
     _multicastDelegate = [[GCDMulticastDelegate alloc] init];
     _stream = [theStream retain];         
     _unreadMessages = [[DSQueue alloc] init];
-    _history = [[DSQueue alloc] initWithCapacity:30];    
+    _history = [[DSQueue alloc] initWithCapacity:2];    
     
     if (theQueue)
 		{

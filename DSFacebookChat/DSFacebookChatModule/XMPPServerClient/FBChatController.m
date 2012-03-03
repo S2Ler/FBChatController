@@ -3,6 +3,7 @@
 #import "FBChatController.h"
 #import "FBChatMessengerModule.h"
 #import "XMPPReconnect.h"
+#import "FBChatSession.h"
 #import "XMPP.h"
 #import "FBChatControllerErrors.h"
 #import "XMPPIDTracker.h"
@@ -132,7 +133,7 @@
 - (void)setupChatMessenger
 {
   [self setChat:[[[FBChatMessengerModule alloc] initWithDispatchQueue:nil] autorelease]];
-   
+  [[self chat] addDelegate:self delegateQueue:dispatch_get_main_queue()];
   [[self chat] activate:[self xmppStream]];
   [[self xmppStream] registerModule:[self chat]];
 }
@@ -282,4 +283,35 @@
     [[self authDelegate] chatControllerRosterChanged:self];
   }
 }
+
+#pragma mark - FBChatMessenger
+- (void)delegateMessage:(XMPPMessage *)theMessage
+{
+  if ([[self messengerDelegate] 
+       respondsToSelector:@selector(chatController:didReceiveNewMessage:)] == YES)
+  {
+    [[self messengerDelegate] chatController:self
+                        didReceiveNewMessage:theMessage];
+  }
+}
+
+- (void)messengerModule:(FBChatMessengerModule *)theMessenger
+       didCreateNewChat:(FBChatSession *)theChat
+{
+  [theChat addDelegate:self
+         delegateQueue:dispatch_get_main_queue()];
+  [self delegateMessage:[[theChat history] lastObject]];
+}
+
+- (void)      chat:(FBChatSession *)theChat
+ didRecieveMessage:(XMPPMessage *)theMessage
+{
+  [self delegateMessage:theMessage];
+}
+- (void)   chat:(FBChatSession *)theChat
+ didSendMessage:(XMPPMessage *)theMessage
+{
+  [self delegateMessage:theMessage];
+}
+
 @end

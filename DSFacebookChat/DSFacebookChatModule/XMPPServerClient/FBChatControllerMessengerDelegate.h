@@ -8,6 +8,11 @@
 
 #import <Foundation/Foundation.h>
 
-@protocol FBChatControllerMessengerDelegate <NSObject>
+@class XMPPMessage;
+@class FBChatController;
 
+@protocol FBChatControllerMessengerDelegate <NSObject>
+@optional
+- (void)chatController:(FBChatController *)theController
+  didReceiveNewMessage:(XMPPMessage *)theMessage;
 @end
