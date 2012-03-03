@@ -9,40 +9,23 @@
 static FBChatController *sharedInstance = nil;
 
 #pragma mark - props
-@interface FBChatController(){
-  XMPPStream *_xmppStream;
-  XMPPIDTracker *_IDTracker;
-  
-  XMPPJID *_JID;
-  NSString *_password;
-  NSString *_host;
-  NSString *_hostPort;
-  
-  id<FBChatControllerDelegate> _delegate;
-  
-  NSMutableArray *_modules;
-}
+@interface FBChatController()
 
+@property (retain) NSMutableArray *modules;
 @property (retain) XMPPStream *xmppStream;
 @property (retain) XMPPIDTracker *IDTracker;
 @property (nonatomic, retain) NSString *FBAppID;
 @property (nonatomic, retain) NSString *FBAccessToken;
-@end
 
-#pragma mark - private
-@interface FBChatController(Private)
 - (void)setupXMPPStream;
 @end
 
-
 @implementation FBChatController
+@synthesize modules = _modules;
 @synthesize FBAccessToken = _FBAccessToken;
 @synthesize xmppStream = _xmppStream;
 @synthesize JID = _JID;
-@synthesize password = _password;
 @synthesize delegate = _delegate;
-@synthesize host = _host;
-@synthesize hostPort = _hostPort;
 @synthesize IDTracker = _IDTracker;
 @synthesize FBAppID = _FBAppID;
 
@@ -52,24 +35,9 @@ static FBChatController *sharedInstance = nil;
   [_IDTracker release];
   [_xmppStream release];
   [_JID release];
-  [_password release];
-  [_host release];
-  [_hostPort release];
   [_modules release];
   
   [super dealloc];
-}
-
-#pragma mark ----------------Singleton----------------
-+ (id)allocWithZone:(NSZone *)zone {
-	@synchronized(self) {
-		if (sharedInstance == nil) {
-			sharedInstance = [super allocWithZone:zone];
-			return sharedInstance;
-		}
-	}
-	
-	return nil;
 }
 
 - (id)initWithAppID:(NSString *)theAppID              
@@ -111,8 +79,6 @@ static FBChatController *sharedInstance = nil;
 }
 
 - (void)goOnline {
-  DDLogInfo(@"Sending available presense");
-  
 //  [[TBPresenseModule sharedInstance] sendSavedPresense];
 }
 
@@ -123,23 +89,6 @@ static FBChatController *sharedInstance = nil;
   [[self xmppStream] sendElement:unavailablePresense];  
 }
 
-- (void)beginSendingGeolocInfo {      
-//  [[TBGeolocModule sharedInstance] sendNewLocation];
-  static dispatch_queue_t q = NULL;
-  
-  if (q == NULL) {
-    q = dispatch_queue_create("com.fbchatcontroller.location.update",
-                              NULL);
-  }
-  
-  dispatch_async(q, ^{
-    [NSThread sleepForTimeInterval:20];
-    dispatch_async(dispatch_get_main_queue(), ^(void) {
-      [self beginSendingGeolocInfo];
-    });
-  });
-}
-
 #pragma mark - initialization of XMPP Stream
 - (void)setupXMPPStream {
   XMPPStream *stream = [[XMPPStream alloc] initWithFacebookAppId:[self FBAppID]];
@@ -147,10 +96,7 @@ static FBChatController *sharedInstance = nil;
         delegateQueue:dispatch_get_main_queue()];
 
 //  [TBRosterClient activateSharedInstanceWithStream:stream];
-//  [TBGeolocModule activateSharedInstanceWithStream:stream];
-//  [TBMapModule activateSharedInstanceWithStream:stream];
   [FBChatMessengerModule activateSharedInstanceWithStream:stream];
-//  [TBAddonModule activateSharedInstanceWithStream:stream];
   
   /** NOTE: TBPresenseModule have to initialized after TBPubSubModule as it uses it */
 //  [TBPubSubModule activateSharedInstanceWithStream:stream
@@ -165,66 +111,70 @@ static FBChatController *sharedInstance = nil;
 }
 
 #pragma mark - XMPPStreamDelegate
-- (void)xmppStreamDidConnect:(XMPPStream *)xmppStream {
+- (void)xmppStreamDidConnect:(XMPPStream *)xmppStream 
+{
   DDLogVerbose(@"%@: %@", THIS_FILE, THIS_METHOD);
 	
-  if (![xmppStream isSecure])
-  {
+  if (![xmppStream isSecure]) {
     NSError *error = nil;
     BOOL result = [xmppStream secureConnection:&error];
     
-    if (result == NO)
-    {
+    if (result == NO) {
       DDLogError(@"%@: Error in xmpp STARTTLS: %@", THIS_FILE, error);
     }
   } 
-  else 
-  {
+  else {
     NSError *error = nil;
     BOOL result = [xmppStream authenticateWithFacebookAccessToken:[self FBAccessToken]
                                                             error:&error];
     
-    if (result == NO)
-    {
+    if (result == NO) {
       DDLogError(@"%@: Error in xmpp auth: %@", THIS_FILE, error);
     }
   }
 }
 
 - (void)xmppStreamDidDisconnect:(XMPPStream *)sender 
-                      withError:(NSError *)error {
+                      withError:(NSError *)error 
+{
   DDLogError(@"Disconnecting from server with error: {%@}", error);             
 }
 
-- (void)xmppStreamDidAuthenticate:(XMPPStream *)sender {
+- (void)xmppStreamDidAuthenticate:(XMPPStream *)sender 
+{
   [self goOnline];
   
-  if ([[self delegate] respondsToSelector:@selector(serverClient:didAuthenticateSuccessfully:)]) {
-    [[self delegate] serverClient:self
-      didAuthenticateSuccessfully:YES];
+  if ([[self delegate] 
+       respondsToSelector:@selector(serverClient:didAuthenticateSuccessfully:)]) 
+  {
+    [[self delegate] serverClient:self didAuthenticateSuccessfully:YES];
   }
 }
 
-- (void)xmppStream:(XMPPStream *)sender 
-didNotAuthenticate:(DDXMLElement *)error {
+- (void)  xmppStream:(XMPPStream *)sender 
+  didNotAuthenticate:(DDXMLElement *)error 
+{
   DDLogError(@"Authecation failed: {%@}", error);
   
-  if ([[self delegate] respondsToSelector:@selector(serverClient:didAuthenticateSuccessfully:)]) {
-    [[self delegate] serverClient:self
-      didAuthenticateSuccessfully:NO];
+  if ([[self delegate]
+       respondsToSelector:@selector(serverClient:didAuthenticateSuccessfully:)]) 
+  {
+    [[self delegate] serverClient:self didAuthenticateSuccessfully:NO];
   }
 }
 
-- (void)xmppStream:(XMPPStream *)sender 
-didReceivePresence:(XMPPPresence *)presence {
+- (void)  xmppStream:(XMPPStream *)sender 
+  didReceivePresence:(XMPPPresence *)presence 
+{
   NSString *presenceType = [presence type];
-//  NSString *username = [[sender myJID] user];
   NSString *presenceFromUser = [[presence from] user];
   
   DDLogInfo(@"Receive Presense: type: {%@}, from user: {%@}", 
             presenceType, presenceFromUser);
 
-  if ([_delegate respondsToSelector:@selector(serverClient:didReceivePresense:fromUser:)]) {
+  if ([_delegate
+       respondsToSelector:@selector(serverClient:didReceivePresense:fromUser:)]) 
+  {
     [_delegate serverClient:self
          didReceivePresense:presenceType
                    fromUser:presenceFromUser];
@@ -236,13 +186,11 @@ didReceivePresence:(XMPPPresence *)presence {
 {
   NSString *type = [iq type];
   
-  if ([type isEqualToString:@"result"] || [type isEqualToString:@"error"])
-  {
+  if ([type isEqualToString:@"result"] || [type isEqualToString:@"error"]) {
     return [_IDTracker invokeForID:[iq elementID]
                         withObject:iq];
   }
-  else
-  {
+  else {
     return NO;
   }
 }

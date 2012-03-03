@@ -15,13 +15,10 @@ XMPPStreamDelegate
 
 - (XMPPStream *)xmppStream;
 
-/** Work on main queue */
+/** Works on main queue */
 - (XMPPIDTracker *)IDTracker;
 
 @property (retain) XMPPJID *JID;
-@property (retain) NSString *password;
-@property (retain) NSString *host;
-@property (retain) NSString *hostPort;
 
 - (id)initWithAppID:(NSString *)theAppID  
       FBAccessToken:(NSString *)theFBAccessToken
@@ -32,12 +29,7 @@ XMPPStreamDelegate
 
 - (void)disconnect;
 
-/** Set JID and password properties before. */
 - (void)goOnline;
-
-/** Set JID and password properties before. */
 - (void)goOffline;
-
-- (void)beginSendingGeolocInfo;
 
 @end
