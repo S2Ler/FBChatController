@@ -1,20 +1,18 @@
 
 #import <Foundation/Foundation.h>
-#import "TBvCardClientDelegate.h"
+#import "FBChatVCardClientDelegate.h"
+#import "XMPPModule.h"
 
 @class XMPPJID;
 @class XMPPvCardTemp;
+@class XMPPIDTracker;
 
-@interface FBChatVCardClient : NSObject {
-  NSMutableArray *_delegates;
-}
+@interface FBChatVCardClient : XMPPModule 
 
-- (void)addDelegate:(id<TBvCardClientDelegate>)theDelegate;
-- (void)removeDelegate:(id<TBvCardClientDelegate>)theDelegate;
-
-+ (FBChatVCardClient *)sharedInstance;
+- (id)initWithIDTracker:(XMPPIDTracker *)theIDTracker;
 
 - (void)request_vCardForJID:(XMPPJID *)theJID;
+
 - (XMPPvCardTemp *)saved_vCardForJID:(XMPPJID *)theJID;
 
 - (void)uploadNew_vCard:(XMPPvCardTemp *)the_vCard;

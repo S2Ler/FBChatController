@@ -104,6 +104,7 @@
 		AE9BB4F314FEA85300A7642B /* XMPPMessage+Chat.m in Sources */ = {isa = PBXBuildFile; fileRef = AE9BB4F114FEA84F00A7642B /* XMPPMessage+Chat.m */; };
 		AE9BB4F614FEA85F00A7642B /* NSString+Chat.m in Sources */ = {isa = PBXBuildFile; fileRef = AE9BB4F514FEA85E00A7642B /* NSString+Chat.m */; };
 		AEB28CCA1503760300168374 /* FBChatVCardClient.m in Sources */ = {isa = PBXBuildFile; fileRef = AEB28CC81503760300168374 /* FBChatVCardClient.m */; };
+		AEB28CCD1503816600168374 /* XMPPPresence+vCardUpdate.m in Sources */ = {isa = PBXBuildFile; fileRef = AEB28CCC1503816600168374 /* XMPPPresence+vCardUpdate.m */; };
 		AEB671DE14E966CB007C7F9D /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AEB671DD14E966CB007C7F9D /* UIKit.framework */; };
 		AEB671E014E966CB007C7F9D /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AEB671DF14E966CB007C7F9D /* Foundation.framework */; };
 		AEB671E214E966CB007C7F9D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AEB671E114E966CB007C7F9D /* CoreGraphics.framework */; };
@@ -358,6 +359,8 @@
 		AEB28CC71503760300168374 /* FBChatVCardClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBChatVCardClient.h; sourceTree = "<group>"; };
 		AEB28CC81503760300168374 /* FBChatVCardClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FBChatVCardClient.m; sourceTree = "<group>"; };
 		AEB28CC91503760300168374 /* FBChatVCardClientDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBChatVCardClientDelegate.h; sourceTree = "<group>"; };
+		AEB28CCB1503816600168374 /* XMPPPresence+vCardUpdate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "XMPPPresence+vCardUpdate.h"; sourceTree = "<group>"; };
+		AEB28CCC1503816600168374 /* XMPPPresence+vCardUpdate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "XMPPPresence+vCardUpdate.m"; sourceTree = "<group>"; };
 		AEB671D914E966CB007C7F9D /* DSFacebookChat.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DSFacebookChat.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AEB671DD14E966CB007C7F9D /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		AEB671DF14E966CB007C7F9D /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -954,6 +957,8 @@
 				AEB28CC71503760300168374 /* FBChatVCardClient.h */,
 				AEB28CC81503760300168374 /* FBChatVCardClient.m */,
 				AEB28CC91503760300168374 /* FBChatVCardClientDelegate.h */,
+				AEB28CCB1503816600168374 /* XMPPPresence+vCardUpdate.h */,
+				AEB28CCC1503816600168374 /* XMPPPresence+vCardUpdate.m */,
 			);
 			path = vCards;
 			sourceTree = "<group>";
@@ -1308,6 +1313,7 @@
 				AEE624981502305E00FFCD96 /* FBChatControllerErrors.m in Sources */,
 				AED363C0150247AF00E0EF46 /* FBChatRosterClient.m in Sources */,
 				AE801E831502A28800E91576 /* FCSendMessageViewController.m in Sources */,
+				AEB28CCD1503816600168374 /* XMPPPresence+vCardUpdate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
