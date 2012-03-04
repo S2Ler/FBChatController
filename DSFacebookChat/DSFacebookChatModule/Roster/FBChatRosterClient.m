@@ -1,10 +1,3 @@
-//
-//  TBRosterClient.m
-//  TalkBazaar
-//
-//  Created by Alexander Belyavskiy on 9/1/11.
-//  Copyright 2011 iTechArt. All rights reserved.
-//
 
 #import "FBChatRosterClient.h"
 #import "XMPPRoster.h"
