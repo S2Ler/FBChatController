@@ -3,11 +3,13 @@
 #import "FBChatControllerDelegate.h"
 #import "FBChatControllerMessengerDelegate.h"
 #import "XMPPStream.h"
+#import "FBChatVCardClientDelegate.h"
 
 @interface FBChatController : NSObject
 <
-XMPPStreamDelegate
-> 
+XMPPStreamDelegate,
+FBChatVCardClientDelegate
+>
 
 - (id)initWithAppID:(NSString *)theAppID  
       FBAccessToken:(NSString *)theFBAccessToken
@@ -23,4 +25,6 @@ XMPPStreamDelegate
 - (NSArray *)whoIsAvailable;
 - (void)sendMessage:(NSString*)msg to:(XMPPJID *)theRecipient;
 
+- (void)requestVCardForUser:(XMPPJID *)theJID;
+- (XMPPvCardTemp *)vCardForUser:(XMPPJID *)theUser;
 @end

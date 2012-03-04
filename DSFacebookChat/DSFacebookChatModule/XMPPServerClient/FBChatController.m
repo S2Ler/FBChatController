@@ -2,6 +2,8 @@
 #pragma mark - include
 #import "FBChatController.h"
 #import "FBChatMessengerModule.h"
+#import "XMPPvCardTemp.h"
+#import "FBChatVCardClient.h"
 #import "FBChatMessageType.h"
 #import "XMPPReconnect.h"
 #import "FBChatSession.h"
@@ -20,11 +22,12 @@
 @property (retain) XMPPIDTracker *IDTracker;
 @property (nonatomic, retain) NSString *FBAppID;
 @property (nonatomic, retain) NSString *FBAccessToken;
-@property (assign) id<FBChatControllerDelegate> authDelegate;
+@property (assign) id<FBChatControllerDelegate> delegate;
 @property (assign) id<FBChatControllerMessengerDelegate> messengerDelegate;
 @property (retain) XMPPJID *JID;
 @property (retain) FBChatRosterClient *roster;
 @property (retain) FBChatMessengerModule *chat;
+@property (retain) FBChatVCardClient *vCardClient;
 
 - (void)setupXMPPStream;
 - (void)goOnline;
@@ -33,11 +36,12 @@
 @end
 
 @implementation FBChatController
+@synthesize vCardClient = _vCardClient;
 @synthesize modules = _modules;
 @synthesize FBAccessToken = _FBAccessToken;
 @synthesize xmppStream = _xmppStream;
 @synthesize JID = _JID;
-@synthesize authDelegate = _authDelegate;
+@synthesize delegate = _delegate;
 @synthesize IDTracker = _IDTracker;
 @synthesize FBAppID = _FBAppID;
 @synthesize messengerDelegate = _messengerDelegate;
@@ -46,6 +50,7 @@
 
 - (void)dealloc {
   [_chat release];
+  [_vCardClient release];  
   [_roster release];
   [_FBAccessToken release];
   [_FBAppID release];
@@ -68,7 +73,7 @@
     _modules = [[NSMutableArray alloc] init];                 
     _FBAppID = [theAppID copy];
     _FBAccessToken = [theFBAccessToken copy];
-    _authDelegate = theDelegate;
+    _delegate = theDelegate;
 	}
 	return self;
 }
@@ -99,7 +104,10 @@
 }
 
 - (void)goOnline {
-//  [[TBPresenseModule sharedInstance] sendSavedPresense];
+  DDLogInfo(@"Sending available presense");
+  XMPPPresence *availablePresense = [XMPPPresence presence];
+  
+  [[self xmppStream] sendElement:availablePresense];  
 }
 
 - (void)goOffline {
@@ -119,6 +127,16 @@
 {
   [[[self chat] chatWithJID:theRecipient] sendMessage:msg 
                                                  type:messageTypes.standard];
+}
+
+- (void)requestVCardForUser:(XMPPJID *)theJID
+{
+  [[self vCardClient] request_vCardForJID:theJID];    
+}
+
+- (XMPPvCardTemp *)vCardForUser:(XMPPJID *)theUser
+{
+  return [FBChatVCardClient saved_vCardForJID:theUser];
 }
 
 #pragma mark - initialization of XMPP Stream
@@ -151,7 +169,18 @@
   [reconnector setAutoReconnect:YES];
   [reconnector setReconnectDelay:1.0];
 
+  [reconnector activate:[self xmppStream]];
   [[self xmppStream] registerModule:reconnector];
+}
+
+- (void)setupVCardClient
+{
+  FBChatVCardClient *vCardClient 
+  = [[FBChatVCardClient alloc] initWithIDTracker:[self IDTracker]];
+  [vCardClient addDelegate:self delegateQueue:dispatch_get_main_queue()];
+  [vCardClient activate:[self xmppStream]];
+  [[self xmppStream] registerModule:vCardClient];  
+  [self setVCardClient:[vCardClient autorelease]];
 }
 
 - (void)setupXMPPStream {
@@ -166,7 +195,7 @@
   [self setupRoster];
   [self setupChatMessenger];
   [self setupAutoreconnect];
-  
+  [self setupVCardClient];
   /** NOTE: TBPresenseModule have to initialized after TBPubSubModule as it uses it */
 //  [TBPubSubModule activateSharedInstanceWithStream:stream
 //                                        serviceJID:[self JID]];
@@ -208,10 +237,10 @@
                       withError:(NSError *)error 
 {
  
-  if ([[self authDelegate] 
+  if ([[self delegate] 
        respondsToSelector:@selector(chatController:didAuthenticateSuccessfully:error:)]) 
   {
-    [[self authDelegate] chatController:self 
+    [[self delegate] chatController:self 
             didAuthenticateSuccessfully:YES
                                   error:error];
   }
@@ -223,10 +252,10 @@
 {
   [self goOnline];
   
-  if ([[self authDelegate] 
+  if ([[self delegate] 
        respondsToSelector:@selector(chatController:didAuthenticateSuccessfully:error:)]) 
   {
-    [[self authDelegate] chatController:self 
+    [[self delegate] chatController:self 
           didAuthenticateSuccessfully:YES
                                 error:nil];
   }
@@ -237,13 +266,13 @@
 {
   DDLogError(@"Authecation failed: {%@}", error);
     
-  if ([[self authDelegate]
+  if ([[self delegate]
        respondsToSelector:@selector(chatController:didAuthenticateSuccessfully:error:)]) 
   {
     NSError *error = [NSError errorWithDomain:FBChatControllerErrorDomain
                                          code:FBChatControllerNotAuthorizedCode
                                      userInfo:nil];
-    [[self authDelegate] chatController:self 
+    [[self delegate] chatController:self 
           didAuthenticateSuccessfully:NO
                                 error:error];
   }
@@ -254,14 +283,14 @@
 {
   NSString *presenceType = [presence type];
   NSString *presenceFromUser = [[presence from] user];
-  
+
   DDLogInfo(@"Receive Presense: type: {%@}, from user: {%@}", 
             presenceType, presenceFromUser);
 
-  if ([[self authDelegate]
+  if ([[self delegate]
        respondsToSelector:@selector(serverClient:didReceivePresense:fromUser:)]) 
   {
-    [[self authDelegate] serverClient:self
+    [[self delegate] serverClient:self
                    didReceivePresense:presenceType
                              fromUser:presenceFromUser];
   }
@@ -284,10 +313,10 @@
 #pragma mark - XMPPRosterDelegate
 - (void)xmppRosterDidChange:(XMPPRosterMemoryStorage *)sender
 {
-  if ([[self authDelegate] 
+  if ([[self delegate] 
        respondsToSelector:@selector(chatControllerRosterChanged:)] == YES) 
   {
-    [[self authDelegate] chatControllerRosterChanged:self];
+    [[self delegate] chatControllerRosterChanged:self];
   }
 }
 
@@ -315,10 +344,35 @@
 {
   [self delegateMessage:theMessage];
 }
+
 - (void)   chat:(FBChatSession *)theChat
  didSendMessage:(XMPPMessage *)theMessage
 {
   [self delegateMessage:theMessage];
+}
+
+#pragma mark - VCardDelegate
+- (void)vCardClient:(FBChatVCardClient *)the_vCardClient
+      vCardReturned:(XMPPvCardTemp *)the_vCard
+             forJID:(XMPPJID *)theJID
+{
+  if ([[self delegate] respondsToSelector:
+       @selector(chatcontroller:didGetVCard:forJID:)] == YES)
+  {
+    [[self delegate] chatcontroller:self didGetVCard:the_vCard forJID:theJID];
+  }
+}
+
+- (void)vCardClient:(FBChatVCardClient *)the_vCardClient 
+uploaded_vCardFor:(XMPPJID *)theUpload_vCardJID
+{
+  
+}
+
+- (void)vCardClient:(FBChatVCardClient *)the_vCardClient
+didFailUpload_vCardForJID:(XMPPJID *)theJID
+{
+  
 }
 
 @end

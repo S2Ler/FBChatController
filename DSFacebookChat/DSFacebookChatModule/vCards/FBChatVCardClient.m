@@ -9,15 +9,23 @@
 
 @interface FBChatVCardClient()
 @property (nonatomic, retain) XMPPIDTracker *IDTracker;
+@property (nonatomic, retain) NSOperationQueue *vCardRequests;
+
 @end
 
 @implementation FBChatVCardClient
 @synthesize IDTracker = _IDTracker;
+@synthesize vCardRequests = _vCardRequests;
 
 - (void)dealloc
 {
   [_IDTracker release];
+  [_vCardRequests release];
   [super dealloc];
+}
+
+- (NSString *)moduleName {
+  return NSStringFromClass([self class]);
 }
 
 - (id)initWithIDTracker:(XMPPIDTracker *)theIDTracker
@@ -25,8 +33,12 @@
 	self = [super init];
   
 	if (self != nil) {		
-    [[XMPPvCardCoreDataStorage sharedInstance] setSaveThreshold:1];
+    [[XMPPvCardCoreDataStorage sharedInstance] setSaveThreshold:200];
+
     _IDTracker = [theIDTracker retain];
+    _vCardRequests = [[NSOperationQueue alloc] init];
+    [_vCardRequests setSuspended:NO];
+    [_vCardRequests setMaxConcurrentOperationCount:1];
 	}
   
 	return self;
@@ -35,48 +47,25 @@
 #pragma mark - public
 - (void)request_vCardForJID:(XMPPJID *)theJID 
 {
-  if ([[XMPPvCardCoreDataStorage sharedInstance]
-       shouldFetchvCardTempForJID:theJID
-       xmppStream:nil]) 
-  {
-    XMPPIQ *vCardIQ = [XMPPvCardTemp iqvCardRequestForJID:theJID];
-    [[self xmppStream] sendElement:vCardIQ];
-  }
+  __block id weakXMPPStream = [self xmppStream];
+  
+  [[self vCardRequests] addOperationWithBlock:^{    
+    if ([[XMPPvCardCoreDataStorage sharedInstance]
+         shouldFetchvCardTempForJID:theJID
+         xmppStream:nil]) 
+    {
+      XMPPIQ *vCardIQ = [XMPPvCardTemp iqvCardRequestForJID:theJID];
+      
+      [weakXMPPStream sendElement:vCardIQ];            
+    }
+  }];
 }
 
-- (XMPPvCardTemp *)saved_vCardForJID:(XMPPJID *)theJID {
++ (XMPPvCardTemp *)saved_vCardForJID:(XMPPJID *)theJID {
   XMPPvCardTemp *saved_vCard 
   = [[XMPPvCardCoreDataStorage sharedInstance] vCardTempForJID:theJID
                                                     xmppStream:nil];
   return saved_vCard;
-}
-
-- (void)uploadNew_vCard:(XMPPvCardTemp *)the_vCard {
-  if (!the_vCard) return;
-  
-  DDXMLElement *vCardIQ = [DDXMLElement elementWithName:@"iq"];
-  
-  [vCardIQ addAttribute:[DDXMLNode attributeWithName:@"from" 
-                                         stringValue:[[[TBServerClient sharedInstance]
-                                                       JID] full]]];
-  [vCardIQ addAttribute:[DDXMLNode attributeWithName:@"type"
-                                         stringValue:@"set"]];
-  
-  NSString *iqID = [NSString stringWithFormat:@"%f",
-                    [[NSDate date] timeIntervalSince1970]];
-
-  [vCardIQ addAttribute:[DDXMLNode attributeWithName:@"id"
-                                         stringValue:iqID]];
-  [vCardIQ addChild:the_vCard];
-  
-  XMPPIQ *iq = [XMPPIQ iqFromElement:vCardIQ];
-  
-  [[self IDTracker] addID:[iq elementID]
-                   target:self
-                 selector:@selector(vCardUploadResultWithIQ:withInfo:)
-                  timeout:VCARD_UPLOAD_TIMEOUT];
-  
-  [[self xmppStream] sendElement:iq];
 }
 
 #pragma mark - XMPPIDTracker

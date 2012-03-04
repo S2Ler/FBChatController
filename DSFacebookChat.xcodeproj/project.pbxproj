@@ -103,8 +103,8 @@
 		AE9BB4EF14FEA78E00A7642B /* DSQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = AE9BB4EE14FEA78E00A7642B /* DSQueue.m */; };
 		AE9BB4F314FEA85300A7642B /* XMPPMessage+Chat.m in Sources */ = {isa = PBXBuildFile; fileRef = AE9BB4F114FEA84F00A7642B /* XMPPMessage+Chat.m */; };
 		AE9BB4F614FEA85F00A7642B /* NSString+Chat.m in Sources */ = {isa = PBXBuildFile; fileRef = AE9BB4F514FEA85E00A7642B /* NSString+Chat.m */; };
-		AEB28CCA1503760300168374 /* FBChatVCardClient.m in Sources */ = {isa = PBXBuildFile; fileRef = AEB28CC81503760300168374 /* FBChatVCardClient.m */; };
 		AEB28CCD1503816600168374 /* XMPPPresence+vCardUpdate.m in Sources */ = {isa = PBXBuildFile; fileRef = AEB28CCC1503816600168374 /* XMPPPresence+vCardUpdate.m */; };
+		AEB28CCE1503876F00168374 /* FBChatVCardClient.m in Sources */ = {isa = PBXBuildFile; fileRef = AEB28CC81503760300168374 /* FBChatVCardClient.m */; };
 		AEB671DE14E966CB007C7F9D /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AEB671DD14E966CB007C7F9D /* UIKit.framework */; };
 		AEB671E014E966CB007C7F9D /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AEB671DF14E966CB007C7F9D /* Foundation.framework */; };
 		AEB671E214E966CB007C7F9D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AEB671E114E966CB007C7F9D /* CoreGraphics.framework */; };
@@ -1314,6 +1314,7 @@
 				AED363C0150247AF00E0EF46 /* FBChatRosterClient.m in Sources */,
 				AE801E831502A28800E91576 /* FCSendMessageViewController.m in Sources */,
 				AEB28CCD1503816600168374 /* XMPPPresence+vCardUpdate.m in Sources */,
+				AEB28CCE1503876F00168374 /* FBChatVCardClient.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1332,7 +1333,6 @@
 				AEB6723C14E96967007C7F9D /* SBJsonBase.m in Sources */,
 				AEB6723E14E96967007C7F9D /* SBJsonParser.m in Sources */,
 				AEB6724014E96967007C7F9D /* SBJsonWriter.m in Sources */,
-				AEB28CCA1503760300168374 /* FBChatVCardClient.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

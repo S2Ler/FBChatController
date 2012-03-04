@@ -11,6 +11,7 @@
 #import "XMPPUser.h"
 #import "XMPPMessage+Chat.h"
 #import "FCSendMessageViewController.h"
+#import "XMPPvCardTemp.h"
 
 @interface FCViewController ()
 @property (nonatomic, retain) NSArray *availableUsers;
@@ -130,6 +131,17 @@ didAuthenticateSuccessfully:(BOOL)theSuccessFlag
     [[cell contentView] setBackgroundColor:[UIColor redColor]];
   }
   
+  XMPPvCardTemp *vCard = [[self chatController] vCardForUser:[user jid]];
+  if (vCard) {
+    UIImage *photo = [UIImage imageWithData:[vCard photo]];
+    [[cell imageView] setImage:photo];
+  }
+  else {
+    [[self chatController] requestVCardForUser:[user jid]];
+    [[cell imageView] setImage:nil];
+  }
+  
+  [cell layoutIfNeeded];
   return cell;
 }
 
@@ -172,4 +184,27 @@ didAuthenticateSuccessfully:(BOOL)theSuccessFlag
       otherButtonTitles:nil] autorelease];
   [message show];
 }
+
+- (void)chatcontroller:(FBChatController *)theController
+           didGetVCard:(XMPPvCardTemp *)theVCard
+                forJID:(XMPPJID *)theJID
+{
+  dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+    [[self availableUsers] enumerateObjectsUsingBlock:
+     ^(id<XMPPUser> user, NSUInteger idx, BOOL *stop) {
+
+       if ([[user jid] isEqualToJID:theJID
+                            options:XMPPJIDCompareBare] == YES) 
+       {
+         dispatch_async(dispatch_get_main_queue(), ^{
+           NSIndexPath *indexPath = [NSIndexPath indexPathForRow:idx inSection:0];
+           [[self tableView] reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath]
+                                   withRowAnimation:UITableViewRowAnimationNone];
+           *stop = YES;           
+         });
+       }
+     }];    
+  });
+}
+
 @end

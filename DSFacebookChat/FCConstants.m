@@ -8,4 +8,4 @@
 
 #import "FCConstants.h"
 
-NSInteger ddLogLevel = LOG_LEVEL_VERBOSE;
+NSInteger ddLogLevel = LOG_LEVEL_OFF;

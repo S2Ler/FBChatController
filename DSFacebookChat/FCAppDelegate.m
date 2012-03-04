@@ -50,8 +50,8 @@
 - (BOOL)            application:(UIApplication *)application 
   didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-  [DDLog addLogger:[DDTTYLogger sharedInstance]];
-  [DDLog addLogger:[DDASLLogger sharedInstance]];
+//  [DDLog addLogger:[DDTTYLogger sharedInstance]];
+//  [DDLog addLogger:[DDASLLogger sharedInstance]];
   
   self.window = [[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
   // Override point for customization after application launch.

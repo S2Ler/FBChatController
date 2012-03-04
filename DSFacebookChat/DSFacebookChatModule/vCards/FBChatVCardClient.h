@@ -13,8 +13,6 @@
 
 - (void)request_vCardForJID:(XMPPJID *)theJID;
 
-- (XMPPvCardTemp *)saved_vCardForJID:(XMPPJID *)theJID;
-
-- (void)uploadNew_vCard:(XMPPvCardTemp *)the_vCard;
++ (XMPPvCardTemp *)saved_vCardForJID:(XMPPJID *)theJID;
 
 @end
