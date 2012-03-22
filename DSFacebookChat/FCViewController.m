@@ -8,10 +8,7 @@
 
 #import "FCViewController.h"
 #import "FBChatController.h"
-#import "XMPPUser.h"
-#import "XMPPMessage+Chat.h"
 #import "FCSendMessageViewController.h"
-#import "XMPPvCardTemp.h"
 
 @interface FCViewController ()
 @property (nonatomic, retain) NSArray *availableUsers;
@@ -122,6 +119,7 @@ didAuthenticateSuccessfully:(BOOL)theSuccessFlag
   }
   
   id<XMPPUser> user = [[self availableUsers] objectAtIndex:[indexPath row]];
+
   [[cell textLabel] setText:[user nickname]];
 
   if ([user isOnline]) {
@@ -132,8 +130,10 @@ didAuthenticateSuccessfully:(BOOL)theSuccessFlag
   }
   
   XMPPvCardTemp *vCard = [[self chatController] vCardForUser:[user jid]];
+  NSData *photoData = [vCard photo];
+  UIImage *photo = [UIImage imageWithData:photoData];
+
   if (vCard) {
-    UIImage *photo = [UIImage imageWithData:[vCard photo]];
     [[cell imageView] setImage:photo];
   }
   else {

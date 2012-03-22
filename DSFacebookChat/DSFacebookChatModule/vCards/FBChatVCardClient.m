@@ -61,11 +61,18 @@
   }];
 }
 
-+ (XMPPvCardTemp *)saved_vCardForJID:(XMPPJID *)theJID {
+- (XMPPvCardTemp *)saved_vCardForJID:(XMPPJID *)theJID {  
   XMPPvCardTemp *saved_vCard 
   = [[XMPPvCardCoreDataStorage sharedInstance] vCardTempForJID:theJID
                                                     xmppStream:nil];
   return saved_vCard;
+}
+
+- (NSString *)photoHashForForJID:(XMPPJID *)theJID
+{
+  return [[XMPPvCardCoreDataStorage sharedInstance] 
+          photoHashForJID:theJID
+          xmppStream:[self xmppStream]];
 }
 
 #pragma mark - XMPPIDTracker

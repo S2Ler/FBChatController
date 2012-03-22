@@ -39,6 +39,8 @@
                                     queue:moduleQueue] autorelease];
     [_chats setObject:chat
                forKey:[theJID bareJID]];
+    [multicastDelegate messengerModule:self
+                      didCreateNewChat:chat]; 
   }
   
   return chat;

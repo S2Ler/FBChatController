@@ -3,6 +3,7 @@
 #import "FBChatController.h"
 #import "FBChatMessengerModule.h"
 #import "XMPPvCardTemp.h"
+#import "XMPPPresence+photoHash.h"
 #import "FBChatVCardClient.h"
 #import "FBChatMessageType.h"
 #import "XMPPReconnect.h"
@@ -13,6 +14,7 @@
 #import "DDLog.h"
 #import "FBChatRosterClient.h"
 #import "XMPPRosterMemoryStorage.h"
+#import "TestFlight.h"
 
 #pragma mark - props
 @interface FBChatController()
@@ -81,6 +83,8 @@
 #pragma mark - public
 - (NSError *)signInWithOnChatInputDelegate:(id<FBChatControllerMessengerDelegate>)theDelegate
 {
+  [TestFlight passCheckpoint:@"Sign In"];
+  
   [self setMessengerDelegate:theDelegate];
   [self setupXMPPStream];
   
@@ -98,6 +102,7 @@
 
 - (void)signOut 
 {
+  [TestFlight passCheckpoint:@"Sign Out"];
   DDLogInfo(@"Disconnecting from server");
   [self goOffline];
   [[self xmppStream] disconnect];
@@ -125,6 +130,8 @@
 
 - (void)sendMessage:(NSString*)msg to:(XMPPJID *)theRecipient
 {
+  [TestFlight passCheckpoint:@"Send Message"];
+
   [[[self chat] chatWithJID:theRecipient] sendMessage:msg 
                                                  type:messageTypes.standard];
 }
@@ -136,7 +143,7 @@
 
 - (XMPPvCardTemp *)vCardForUser:(XMPPJID *)theUser
 {
-  return [FBChatVCardClient saved_vCardForJID:theUser];
+  return [[self vCardClient] saved_vCardForJID:theUser];
 }
 
 #pragma mark - initialization of XMPP Stream
@@ -210,6 +217,8 @@
 #pragma mark - XMPPStreamDelegate
 - (void)xmppStreamDidConnect:(XMPPStream *)xmppStream 
 {
+  [TestFlight passCheckpoint:@"XMPP Stream Did Connect"];
+
   DDLogVerbose(@"%@: %@", THIS_FILE, THIS_METHOD);
 	
   if (![xmppStream isSecure]) {
@@ -237,6 +246,8 @@
                       withError:(NSError *)error 
 {
  
+  [TestFlight passCheckpoint:@"XMPP Stream Did Disconnect"];
+
   if ([[self delegate] 
        respondsToSelector:@selector(chatController:didAuthenticateSuccessfully:error:)]) 
   {
@@ -250,6 +261,8 @@
 
 - (void)xmppStreamDidAuthenticate:(XMPPStream *)sender 
 {
+  [TestFlight passCheckpoint:@"XMPP Stream Did Auth"];
+
   [self goOnline];
   
   if ([[self delegate] 
@@ -264,6 +277,8 @@
 - (void)  xmppStream:(XMPPStream *)sender 
   didNotAuthenticate:(DDXMLElement *)error 
 {
+  [TestFlight passCheckpoint:@"XMPP Stream Did Not Auth"];
+
   DDLogError(@"Authecation failed: {%@}", error);
     
   if ([[self delegate]
@@ -286,13 +301,21 @@
 
   DDLogInfo(@"Receive Presense: type: {%@}, from user: {%@}", 
             presenceType, presenceFromUser);
+  
+  NSString *presensePhotoHash = [presence photoHash];
+  NSString *savedPhotoHash = [[self vCardClient] 
+                              photoHashForForJID:[presence from]];
+  if ([presensePhotoHash isEqualToString:savedPhotoHash] == NO)
+  {
+    [self requestVCardForUser:[presence from]];
+  }
 
   if ([[self delegate]
        respondsToSelector:@selector(serverClient:didReceivePresense:fromUser:)]) 
   {
     [[self delegate] serverClient:self
-                   didReceivePresense:presenceType
-                             fromUser:presenceFromUser];
+               didReceivePresense:presenceType
+                         fromUser:presenceFromUser];
   }
 }
 
@@ -334,6 +357,8 @@
 - (void)messengerModule:(FBChatMessengerModule *)theMessenger
        didCreateNewChat:(FBChatSession *)theChat
 {
+  [TestFlight passCheckpoint:@"Chat Created"];
+
   [theChat addDelegate:self
          delegateQueue:dispatch_get_main_queue()];
   [self delegateMessage:[[theChat history] lastObject]];
@@ -342,12 +367,16 @@
 - (void)      chat:(FBChatSession *)theChat
  didRecieveMessage:(XMPPMessage *)theMessage
 {
+  [TestFlight passCheckpoint:@"Message received"];
+
   [self delegateMessage:theMessage];
 }
 
 - (void)   chat:(FBChatSession *)theChat
  didSendMessage:(XMPPMessage *)theMessage
 {
+  [TestFlight passCheckpoint:@"Message Sent"];
+
   [self delegateMessage:theMessage];
 }
 

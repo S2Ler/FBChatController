@@ -43,11 +43,11 @@
       [users addObject:anyUser];
     }
   }
-  
+
   return users;  
 }
 
-- (NSArray *)sortedServicesJIDsByAvailabilityName
+- (NSArray *)sortedUsersByAvailabilityNameedServicesJIDsByAvailabilityName
 {
   NSArray *allUsers = [self sortedAllUsersByAvailabilityName];
   

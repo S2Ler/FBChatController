@@ -13,6 +13,7 @@
 
 - (void)request_vCardForJID:(XMPPJID *)theJID;
 
-+ (XMPPvCardTemp *)saved_vCardForJID:(XMPPJID *)theJID;
+- (XMPPvCardTemp *)saved_vCardForJID:(XMPPJID *)theJID;
+- (NSString *)photoHashForForJID:(XMPPJID *)theJID;
 
 @end
